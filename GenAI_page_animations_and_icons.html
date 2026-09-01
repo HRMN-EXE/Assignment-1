@@ -1,0 +1,529 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GenAI: Creativity at Mechanical Scale</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arial+Black:wght@100..900&amp;family=Arial+Bold:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 700;
+        }
+    </style>
+<!-- Tailwind Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#131313",
+                      "inverse-primary": "#bf0030",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary": "#002c70",
+                      "tertiary": "#c6c6c7",
+                      "on-background": "#e5e2e1",
+                      "inverse-surface": "#e5e2e1",
+                      "on-secondary-fixed-variant": "#00419e",
+                      "surface-bright": "#393939",
+                      "on-surface-variant": "#e6bdbc",
+                      "surface-tint": "#ffb3b3",
+                      "surface-dim": "#131313",
+                      "primary-container": "#dc143c",
+                      "surface-container-highest": "#353535",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "on-primary-fixed-variant": "#920022",
+                      "inverse-on-surface": "#313030",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "secondary-fixed-dim": "#b1c5ff",
+                      "error-container": "#93000a",
+                      "primary": "#ffb3b3",
+                      "on-tertiary-container": "#f4f4f4",
+                      "tertiary-container": "#6e7070",
+                      "secondary-fixed": "#dae2ff",
+                      "on-secondary-fixed": "#001946",
+                      "tertiary-fixed-dim": "#c6c6c7",
+                      "on-secondary-container": "#a6beff",
+                      "on-surface": "#e5e2e1",
+                      "outline-variant": "#5c3f3f",
+                      "tertiary-fixed": "#e2e2e2",
+                      "grunge-gray": "#808080",
+                      "primary-fixed-dim": "#ffb3b3",
+                      "on-primary": "#680015",
+                      "background": "#131313",
+                      "primary-fixed": "#ffdad9",
+                      "on-tertiary": "#2f3131",
+                      "error": "#ffb4ab",
+                      "surface-container": "#20201f",
+                      "matte-black": "#1A1A1A",
+                      "surface-container-high": "#2a2a2a",
+                      "on-primary-fixed": "#40000a",
+                      "secondary": "#b1c5ff",
+                      "on-primary-container": "#fff1f0",
+                      "outline": "#ac8888",
+                      "surface-container-lowest": "#0e0e0e",
+                      "off-white": "#F5F5F5",
+                      "surface-container-low": "#1c1b1b",
+                      "surface-variant": "#353535",
+                      "secondary-container": "#0148ab",
+                      "cobalt": "#0047AB",
+                      "crimson": "#DC143C"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-page": "2rem",
+                      "stack-overlap": "-1rem",
+                      "card-padding": "1.5rem",
+                      "gutter": "1.5rem"
+              },
+              "fontFamily": {
+                      "subheadline": ["Arial Black"],
+                      "quote-text": ["Arial"],
+                      "headline-xxl": ["Arial Black"],
+                      "body-lg": ["Arial"],
+                      "body-md": ["Arial"],
+                      "headline-lg-mobile": ["Arial Black"],
+                      "headline-lg": ["Arial Black"],
+                      "label-bold": ["Arial Bold"]
+              },
+              "fontSize": {
+                      "subheadline": ["24px", { "lineHeight": "1.2", "fontWeight": "900" }],
+                      "quote-text": ["20px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                      "headline-xxl": ["36px", { "lineHeight": "1.0", "letterSpacing": "-0.05em", "fontWeight": "900" }],
+                      "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                      "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                      "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "fontWeight": "900" }],
+                      "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900" }],
+                      "label-bold": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }]
+              }
+            }
+          }
+        }
+    </script>
+<style id="scroll-fx-styles">
+    /* ---------- Pinned hero video, pushed back on the Z axis ---------- */
+    .hero-video-z {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        transform: scale(1) translateZ(0);
+        transform-origin: center center;
+        opacity: 1;
+        will-change: transform, opacity;
+    }
+    /* Once JS confirms the hero has scrolled fully out of view, unpin the video
+       so it doesn't sit "fixed" underneath the rest of the page forever. */
+    .hero-video-z.is-parked {
+        position: absolute;
+    }
+
+    .hero-scroll-cue {
+        animation: scrollCueBob 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollCueBob {
+        0%, 100% { transform: translate(-50%, 0); }
+        50% { transform: translate(-50%, 8px); }
+    }
+
+    /* ---------- Reveal-on-scroll ---------- */
+    .reveal-up {
+        --tw-translate-y: 48px;
+        opacity: 0;
+        transition: opacity .9s cubic-bezier(.16,.84,.44,1), transform .9s cubic-bezier(.16,.84,.44,1);
+    }
+    .reveal-up.is-visible {
+        --tw-translate-y: 0px;
+        opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-up, .reveal-up.is-visible { transition: none !important; --tw-translate-y: 0px !important; opacity: 1 !important; }
+        .hero-video-z { transition: none !important; }
+        .hero-scroll-cue { animation: none !important; }
+    }
+</style>
+</head>
+<body class="bg-matte-black text-on-surface font-body-md overflow-x-hidden min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary docked full-width top-0 border-b-2 border-on-surface border-b-4 border-matte-black flat no shadows flex justify-between items-center w-full px-margin-page py-4 sticky top-0 z-[100]">
+<div class="font-headline-xxl text-headline-xxl tracking-tighter text-on-surface uppercase hover:skew-x-2 hover:text-crimson transition-transform active:translate-y-1 transition-all duration-75">
+            THE GENAI&nbsp;</div>
+<button class="hidden md:inline-block border-2 border-on-surface px-6 py-2 text-on-surface font-label-bold text-label-bold shadow-[4px_4px_0px_#e5e2e1] hover:shadow-[2px_2px_0px_#e5e2e1] hover:translate-x-[2px] hover:translate-y-[2px] transition-all bg-surface">
+            FYIT-21
+        </button>
+</header>
+<main class="flex-grow flex flex-col gap-24 py-16 relative">
+<!-- Background Texture Placeholder -->
+<div class="absolute inset-0 z-0 opacity-5 pointer-events-none" data-alt="A distressed, high-contrast brutalist grunge texture featuring torn paper edges, halftone patterns, and industrial scratches on a dark background. Rebellious editorial aesthetic, pure black and white styling." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBcym1t9412csOxiNzTxFrzTCZq0AGbdbqWbp4KAKvKaewlDg2rAAow5m1Ej3E8eKD6GwopPbmY9y_3Yp6Ewjp0kSAEdJ-OnLOXi1OUCTqc295tgekagRtrLZeTfgrFOiZzoVtgyWPRfhmXWhtfRnHWW4CDRg_bwQpSG9g_wVXD3GZsf00FsRLTfnYbEUo5KsgPOAuZzEn30C4Po03qmPFni4v1QSVOWQU_j_pu_nykSmGP3Fm1aWDW9w&quot;);"></div>
+<!-- Hero Section -->
+<section class="relative z-10 w-full min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16" data-no-reveal data-hero-pin>
+<video autoplay="" class="hero-video-z" loop="" muted="" playsinline="">
+<source src="hero-video.mp4" type="video/mp4">
+</video>
+<div class="absolute top-8 left-0 px-margin-page max-w-2xl z-20 reveal-manual">
+<h1 class="font-headline-lg-mobile md:font-headline-xxl text-off-white bg-matte-black inline-block p-2 border-4 border-off-white transform md:-rotate-1 shadow-[8px_8px_0px_#808080] whitespace-nowrap text-xl md:text-3xl">
+                    GenAI: Creativity at Mechanical Scale
+                </h1>
+<h2 class="font-subheadline text-crimson uppercase tracking-wider bg-surface-container inline-block px-4 py-2 border-2 border-crimson self-start shadow-[6px_6px_0px_#DC143C] md:rotate-1 mt-4 whitespace-nowrap text-xs md:text-base">
+                    From Human Intent → Beyond Human Intuition
+                </h2>
+</div>
+<div class="absolute bottom-8 right-0 px-margin-page max-w-md ml-auto z-20 reveal-manual" style="transition-delay:.15s">
+<div class="bg-surface-container-high border-4 border-on-surface shadow-[12px_12px_0px_#808080] p-8 transform rotate-2">
+<p class="font-quote-text text-quote-text text-off-white border-l-8 border-crimson pl-6 italic">
+                        "Telescopes extended human sight. Generative AI is being positioned as the first tool to extend human imagination itself — this site unpacks whether that claim holds up, and where it doesn't."
+                    </p>
+</div>
+
+</div>
+
+<div class="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 text-off-white opacity-70 pointer-events-none">
+<span class="font-label-bold text-label-bold uppercase tracking-wider text-xs">Scroll</span>
+<span class="material-symbols-outlined">arrow_downward</span>
+</div>
+
+</section>
+<!-- Why It Matters -->
+<section class="relative z-10 px-margin-page max-w-5xl mx-auto w-full mt-8">
+<!-- White sticky note -->
+<div class="bg-off-white text-matte-black border-4 border-matte-black shadow-[16px_16px_0px_#1A1A1A] p-card-padding transform md:-rotate-2 max-w-3xl relative">
+<!-- Tape visual -->
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-tertiary opacity-70 rotate-3 mix-blend-multiply"></div>
+<h3 class="font-subheadline text-subheadline border-b-4 border-matte-black pb-2 mb-4">Why It Matters</h3>
+<ul class="list-disc pl-6 font-body-lg text-body-lg flex flex-col gap-4 mb-8">
+<li class="">Telescopes extended human <strong>sight</strong> — a physical sense. Well-documented, uncontested (Galileo, 1609 onward).</li>
+<li class="">Generative AI is argued to extend human <strong>imagination</strong> — a cognitive/creative faculty. This is the interesting, debatable claim of the whole piece.</li>
+</ul>
+<!-- Expandable Box -->
+<div class="accordion-item border-4 border-matte-black bg-surface-container-low text-off-white mt-6 shadow-[6px_6px_0px_#1A1A1A] group">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-surface-variant transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase text-crimson">Is this actually a new kind of tool?</span>
+<span class="material-symbols-outlined text-crimson text-2xl group-[.is-open]:rotate-45 transition-transform">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-matte-black font-body-md text-body-md bg-matte-black hidden">
+<p class="">Tools have extended human capability before: the printing press scaled the distribution of ideas, the camera scaled visual capture, CAD scaled precision drafting. What's arguably different about GenAI is that it scales the generation of novel combinations itself — you describe an intent, and it produces variations you didn't manually author. Whether that counts as "extending imagination" or "automating recombination" is a real debate — link both framings here so the reader can decide, not because there's a settled answer.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Core Mechanism -->
+<section class="relative z-10 px-margin-page max-w-4xl mx-auto w-full flex flex-col gap-8">
+<div class="bg-crimson inline-block px-4 py-2 self-start border-4 border-matte-black shadow-[8px_8px_0px_#1A1A1A] rotate-1">
+<h2 class="font-subheadline text-subheadline text-matte-black uppercase">Core Mechanism</h2>
+</div>
+<!-- Card 1 -->
+<div class="accordion-item bg-matte-black border-4 border-off-white text-off-white shadow-[12px_12px_0px_#e5e2e1] group transform md:rotate-1">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-card-padding hover:bg-surface-container transition-colors text-left">
+<h3 class="font-subheadline text-subheadline w-[80%]">GenAI doesn't think — it's an optical lens for patterns</h3>
+<span class="material-symbols-outlined text-4xl text-off-white group-[.is-open]:hidden">add</span>
+<span class="material-symbols-outlined text-4xl text-off-white hidden group-[.is-open]:block">remove</span>
+</button>
+<div class="accordion-content border-t-4 border-off-white p-card-padding bg-cobalt hidden">
+<p class="font-body-lg text-body-lg mb-6">
+                        Generative AI models (large language models, diffusion models) are trained on huge datasets to learn statistical patterns — which words tend to follow other words, which pixel arrangements tend to look like "a cat" or "a watercolor painting." When you give a prompt, the model isn't reasoning about your request the way a person would; it's sampling from a learned probability distribution shaped by everything it was trained on. That's the "lens" — it focuses and refracts existing patterns rather than originating new ones from scratch.
+                    </p>
+<div class="bg-matte-black border-2 border-off-white p-4 shadow-[4px_4px_0px_#F5F5F5]">
+<h4 class="font-label-bold text-label-bold text-crimson mb-2 uppercase">FAQ: "So it's just copying/remixing existing stuff?"</h4>
+<p class="font-body-md text-body-md">Not exact copying — it's closer to interpolation across a very high-dimensional space of patterns, which can produce genuinely novel combinations even though every underlying pattern came from training data. This is a real point of debate in AI research and copyright law.</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="accordion-item bg-matte-black border-4 border-off-white text-off-white shadow-[12px_12px_0px_#e5e2e1] group transform md:-rotate-1">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-card-padding hover:bg-surface-container transition-colors text-left">
+<h3 class="font-subheadline text-subheadline">Good Data = Good Output</h3>
+<span class="material-symbols-outlined text-4xl text-off-white group-[.is-open]:hidden">add</span>
+<span class="material-symbols-outlined text-4xl text-off-white hidden group-[.is-open]:block">remove</span>
+</button>
+<div class="accordion-content border-t-4 border-off-white p-card-padding bg-cobalt hidden">
+<p class="font-body-lg text-body-lg mb-6">
+                        This is the "garbage in, garbage out" principle from classical machine learning, still true for generative models. If training data is biased, low-quality, or narrow, the model's outputs inherit those same biases and limitations — it has no independent way to know better.
+                    </p>
+<div class="bg-matte-black border-4 border-crimson p-4 shadow-[4px_4px_0px_#DC143C]">
+<h4 class="font-label-bold text-label-bold text-crimson mb-2 uppercase">FAQ: "Can't the AI just fix bad data on its own?"</h4>
+<p class="font-body-md text-body-md">No — a model has no ground truth outside its training data and fine-tuning signal. Techniques like RLHF (reinforcement learning from human feedback) can steer outputs toward what humans rate as better, but that's still humans injecting a correction signal, not the model independently verifying truth.</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="accordion-item bg-matte-black border-4 border-off-white text-off-white shadow-[12px_12px_0px_#e5e2e1] group transform md:rotate-1">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-card-padding hover:bg-surface-container transition-colors text-left">
+<h3 class="font-subheadline text-subheadline w-[80%]">The tool is always bounded by human knowledge</h3>
+<span class="material-symbols-outlined text-4xl text-off-white group-[.is-open]:hidden">add</span>
+<span class="material-symbols-outlined text-4xl text-off-white hidden group-[.is-open]:block">remove</span>
+</button>
+<div class="accordion-content border-t-4 border-off-white p-card-padding bg-cobalt hidden">
+<p class="font-body-lg text-body-lg mb-6">
+                        For GenAI trained on human-generated data (most current LLMs, image/video diffusion models), this is largely true — the model's outputs live within the distribution of what it was trained on, even when recombined in novel ways.
+                    </p>
+<div class="bg-off-white text-matte-black border-4 border-matte-black p-4 shadow-[4px_4px_0px_#1A1A1A]">
+<h4 class="font-label-bold text-label-bold text-crimson mb-2 uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">warning</span>
+                            But Wait: The Exception
+                        </h4>
+<p class="font-body-md text-body-md mb-2">Not all AI is bound this way. Systems trained through <strong>self-play / reinforcement learning</strong> — like DeepMind's AlphaGo — learn from their own generated experience rather than only human data. This produced Move 37, a 2016 move against Lee Sedol so unconventional that AlphaGo itself estimated only a 1-in-10,000 chance a human would ever play it — and it turned out to be brilliant.</p>
+<p class="font-body-md text-body-md font-bold mt-4 border-t-2 border-tertiary pt-2">The distinction that matters: "Generative AI" imitates human-created data. "Reinforcement learning" systems can generate genuinely new knowledge through self-generated experience.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Expanding Human Capability Divider -->
+<section class="w-full bg-crimson border-y-8 border-matte-black py-12 my-12 transform md:rotate-1 md:scale-105 shadow-[0px_16px_0px_#1A1A1A] relative z-20 flex justify-center overflow-hidden">
+<!-- Glitchy overlay background for divider -->
+<div class="absolute inset-0 opacity-10 mix-blend-overlay" data-alt="A repeating seamless halftone dot pattern in solid black, providing a mechanical print texture to a vibrant red banner." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuChBOsxR2IMrus0EQknIcAXfX15A3QFyjsqygs33rBdP189J2kDz1m1IdyGpyrYOaP6GFjDLDOuScich__55fDSPPiZd5o415WW7CeI1Ovqe0PYlOjZbTO3ZfAYk1VVrd8CITlCP41Q2dl87kQRLznSlGyrbZq3yIpivuLojMwqfOA_yUgDE3k8nSUfFiVVA5MweN5Jqm-6zD8E4Zbo1MACoqH8Mx7Pog2u13DpfG4R6pZUTv5G8X6B2A&quot;);"></div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-matte-black uppercase text-center px-4 relative z-10 mix-blend-color-burn">
+                Expanding Human Capability
+            </h2>
+</section>
+<!-- In Practice -->
+<section class="relative z-10 px-margin-page max-w-5xl mx-auto w-full">
+<div class="bg-cobalt border-4 border-off-white shadow-[16px_16px_0px_#e5e2e1] p-card-padding transform md:-rotate-1">
+<div class="flex items-center gap-4 mb-6 border-b-4 border-off-white pb-4">
+<span class="material-symbols-outlined text-4xl text-off-white">architecture</span>
+<h2 class="font-subheadline text-subheadline text-off-white">In Practice: The Workflow</h2>
+</div>
+<div class="flex flex-col md:flex-row gap-8 items-center bg-matte-black border-2 border-off-white p-6 mb-8 shadow-[8px_8px_0px_#1A1A1A]">
+<div class="flex-1 text-center font-label-bold text-label-bold text-off-white uppercase border-b-2 md:border-b-0 md:border-r-2 border-tertiary pb-4 md:pb-0 md:pr-4">
+                        Humans sketch basic shapes
+                    </div>
+<div class="material-symbols-outlined text-crimson text-3xl rotate-90 md:rotate-0">arrow_forward</div>
+<div class="flex-1 text-center font-label-bold text-label-bold text-off-white uppercase border-b-2 md:border-b-0 md:border-r-2 border-tertiary pb-4 md:pb-0 md:px-4">
+                        AI focuses the lens across thousands of configurations
+                    </div>
+<div class="material-symbols-outlined text-crimson text-3xl rotate-90 md:rotate-0">arrow_forward</div>
+<div class="flex-1 text-center font-label-bold text-label-bold text-off-white uppercase pt-4 md:pt-0 md:pl-4">
+                        Reveals hyper-optimized forms beyond ordinary intuition
+                    </div>
+</div>
+<div class="accordion-item bg-off-white border-4 border-matte-black text-matte-black group shadow-[6px_6px_0px_#1A1A1A] is-open">
+<button aria-expanded="true" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-tertiary transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase text-crimson flex items-center gap-2">
+<span class="material-symbols-outlined">help</span>
+                            Wait, is generative design the same as generative AI?
+                        </span>
+<span class="material-symbols-outlined text-crimson text-2xl group-[.is-open]:rotate-45 transition-transform">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-matte-black font-body-md text-body-md bg-surface-container-highest text-off-white">
+<p class="mb-4">No, and this matters: <strong>Generative design</strong> mostly relies on optimization algorithms searching a defined solution space against explicit engineering constraints. <strong>Generative AI</strong> (LLMs, diffusion models) generates open-ended content via learned statistical patterns, without necessarily any explicit optimization objective.</p>
+<p class="">Real-world examples of generative design: aerospace brackets, bicycle frames, architectural layouts. Real-world examples of generative AI: chatbots, image generators, code assistants. This site uses generative design as an illustration of "beyond ordinary intuition," while making clear it's a cousin technology, not the same thing as GenAI.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Glossary & FAQ Bento Grid area -->
+<section class="relative z-10 px-margin-page max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
+<!-- Glossary -->
+<div class="flex flex-col gap-4">
+<div class="bg-off-white inline-block px-4 py-2 self-start border-4 border-matte-black shadow-[6px_6px_0px_#1A1A1A] -rotate-2 mb-4">
+<h2 class="font-subheadline text-subheadline text-matte-black uppercase font-label-bold">Glossary</h2>
+</div>
+<div class="border-4 border-outline-variant bg-surface-container-high flex flex-col shadow-[8px_8px_0px_#5c3f3f]">
+<!-- Terms -->
+<div class="border-b-2 border-outline-variant p-4">
+<h4 class="font-label-bold text-label-bold text-off-white">Generative AI (GenAI)</h4>
+<p class="font-body-md text-body-md mt-1">AI systems (typically LLMs or diffusion models) that produce new text, images, audio, or video by learning statistical patterns from training data.</p>
+</div>
+<div class="border-b-2 border-outline-variant p-4">
+<h4 class="font-label-bold text-label-bold text-off-white">Generative design</h4>
+<p class="font-body-md text-body-md mt-1">An engineering/CAD discipline where algorithms explore many design variants against defined constraints to find optimized solutions.</p>
+</div>
+<div class="border-b-2 border-outline-variant p-4">
+<h4 class="font-label-bold text-label-bold text-off-white">Hallucination</h4>
+<p class="font-body-md text-body-md mt-1">When a generative model produces confident but factually incorrect or fabricated output — a direct consequence of generating plausible patterns over verified facts.</p>
+</div>
+<div class="border-b-2 border-outline-variant p-4">
+<h4 class="font-label-bold text-label-bold text-off-white">Reinforcement learning (RL)</h4>
+<p class="font-body-md text-body-md mt-1">A training method where an AI learns by taking actions and receiving reward signals, often through self-play, rather than imitating labeled human data.</p>
+</div>
+<div class="p-4">
+<h4 class="font-label-bold text-label-bold text-off-white">Training data</h4>
+<p class="font-body-md text-body-md mt-1">The dataset a model learns patterns from; the model's outputs are fundamentally shaped and bounded by this data.</p>
+</div>
+</div>
+</div>
+<!-- FAQ -->
+<div class="flex flex-col gap-4">
+<div class="bg-off-white inline-block px-4 py-2 self-start border-4 border-matte-black shadow-[6px_6px_0px_#1A1A1A] rotate-2 mb-4">
+<h2 class="font-subheadline text-subheadline text-matte-black uppercase font-label-bold">FAQ</h2>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Q1 -->
+<div class="accordion-item border-4 border-outline-variant bg-surface group shadow-[6px_6px_0px_#5c3f3f]">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-surface-variant transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase pr-4">Is GenAI actually creative, or just really good at remixing?</span>
+<span class="material-symbols-outlined text-crimson group-[.is-open]:rotate-45 transition-transform flex-shrink-0">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-outline-variant font-body-md text-body-md bg-matte-black hidden">
+                            Contested question, genuinely unresolved among researchers, artists, and philosophers. Present both sides: (1) it produces outputs no human explicitly authored, which some consider a form of creativity; (2) it can only recombine patterns present in training data, which others argue disqualifies it from "true" creativity in the human sense.
+                        </div>
+</div>
+<!-- Q2 -->
+<div class="accordion-item border-4 border-outline-variant bg-surface group shadow-[6px_6px_0px_#5c3f3f]">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-surface-variant transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase pr-4">Will GenAI outputs ever exceed human knowledge?</span>
+<span class="material-symbols-outlined text-crimson group-[.is-open]:rotate-45 transition-transform flex-shrink-0">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-outline-variant font-body-md text-body-md bg-matte-black hidden">
+                            Within pure imitation-learning GenAI (LLMs/diffusion trained on human data) — unlikely by design. Within RL/self-play systems (different category) — yes, already demonstrated (Move 37, AlphaFold). Hybrid systems combining both approaches are an active research area.
+                        </div>
+</div>
+<!-- Q3 -->
+<div class="accordion-item border-4 border-outline-variant bg-surface group shadow-[6px_6px_0px_#5c3f3f] is-open">
+<button aria-expanded="true" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-surface-variant transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase pr-4">Why the statue + robot visual metaphor?</span>
+<span class="material-symbols-outlined text-crimson group-[.is-open]:rotate-45 transition-transform flex-shrink-0">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-outline-variant font-body-md text-body-md bg-matte-black">
+                            Visual metaphor for "human + machine" — classical human form (imagination, culture, intuition) fused with mechanical precision (scale, speed, tireless iteration). Purely illustrative, not a technical claim.
+                        </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Sources -->
+<section class="relative z-10 px-margin-page max-w-4xl mx-auto w-full mt-16">
+<h2 class="font-subheadline text-subheadline text-off-white border-b-4 border-crimson pb-2 mb-6 uppercase inline-block">Sources &amp; Literature</h2>
+<div class="overflow-x-auto border-4 border-off-white bg-surface shadow-[12px_12px_0px_#e5e2e1] transform md:rotate-1">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-crimson text-off-white font-label-bold text-label-bold uppercase">
+<th class="p-4 border-b-4 border-r-4 border-matte-black w-12">#</th>
+<th class="p-4 border-b-4 border-r-4 border-matte-black">Claim Supported</th>
+<th class="p-4 border-b-4 border-matte-black">Source</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="border-b-2 border-outline-variant hover:bg-surface-variant transition-colors">
+<td class="p-4 border-r-2 border-outline-variant">1</td>
+<td class="p-4 border-r-2 border-outline-variant">Generative design explores thousands of configurations</td>
+<td class="p-4 text-secondary hover:underline cursor-pointer">McKinsey / Autodesk Articles</td>
+</tr>
+<tr class="border-b-2 border-outline-variant hover:bg-surface-variant transition-colors">
+<td class="p-4 border-r-2 border-outline-variant">2</td>
+<td class="p-4 border-r-2 border-outline-variant">AlphaGo Move 37 — AI exceeding human intuition</td>
+<td class="p-4 text-secondary hover:underline cursor-pointer">DeepMind Case Studies (2016)</td>
+</tr>
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="p-4 border-r-2 border-outline-variant">3</td>
+<td class="p-4 border-r-2 border-outline-variant">GenAI bounded by training data limits</td>
+<td class="p-4 text-secondary hover:underline cursor-pointer">ML Literature on Distribution Limits</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-crimson dark:bg-crimson text-on-primary dark:text-on-primary full-width bottom-0 border-t-8 border-matte-black flat no shadows flex flex-col md:flex-row justify-between items-center w-full px-margin-page py-gutter gap-4 relative z-50">
+<div class="font-headline-lg text-headline-lg-mobile text-matte-black">
+            © 2026 Harman Shrinivas Sanepogulu ,<span class="selectable-text copyable-text xkrh14z" style="white-space: pre-wrap;">CHM College(FY</span>IT). All rights reserved</div>
+<nav class="flex gap-6">
+
+
+
+</nav>
+</footer>
+<!-- Interactive Script for Accordions -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+            
+            accordionTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const item = trigger.closest('.accordion-item');
+                    const content = item.querySelector('.accordion-content');
+                    const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+                    
+                    // Toggle state
+                    if (isExpanded) {
+                        trigger.setAttribute('aria-expanded', 'false');
+                        content.classList.add('hidden');
+                        item.classList.remove('is-open');
+                    } else {
+                        trigger.setAttribute('aria-expanded', 'true');
+                        content.classList.remove('hidden');
+                        item.classList.add('is-open');
+                    }
+                });
+            });
+        });
+    </script>
+
+<!-- Scroll reveal + Z-axis pinned hero video -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ---- 1. Reveal-on-scroll for the rest of the page ---- */
+            const revealTargets = document.querySelectorAll(
+                'main > section:not([data-no-reveal]), .accordion-item, table, footer, .reveal-manual'
+            );
+
+            revealTargets.forEach((el, i) => {
+                el.classList.add('transform', 'reveal-up');
+                if (!el.style.transitionDelay) {
+                    el.style.transitionDelay = `${(i % 4) * 0.09}s`;
+                }
+            });
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+            revealTargets.forEach((el) => revealObserver.observe(el));
+
+            /* ---- 2. Hero video pinned on the Z axis, page scrolls over it ---- */
+            const heroVideo = document.querySelector('.hero-video-z');
+            const heroSection = document.querySelector('[data-hero-pin]');
+
+            if (heroVideo && heroSection) {
+                let ticking = false;
+
+                const updateVideoZ = () => {
+                    const heroHeight = heroSection.offsetHeight || window.innerHeight;
+                    const progress = Math.min(Math.max(window.scrollY / heroHeight, 0), 1);
+
+                    // Push the video back in Z space and fade it as content scrolls over it
+                    const scale = 1 + progress * 0.28;
+                    const translateZ = progress * -260;
+                    const opacity = 1 - progress * 0.55;
+
+                    heroVideo.style.transform = `translateZ(${translateZ}px) scale(${scale})`;
+                    heroVideo.style.opacity = opacity;
+
+                    // Once fully scrolled past the hero, stop pinning so it doesn't linger
+                    // fixed underneath the rest of the document.
+                    heroVideo.classList.toggle('is-parked', progress >= 1);
+
+                    ticking = false;
+                };
+
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(updateVideoZ);
+                        ticking = true;
+                    }
+                }, { passive: true });
+
+                window.addEventListener('resize', updateVideoZ);
+                updateVideoZ();
+            }
+        });
+    </script>
+
+</body></html>
