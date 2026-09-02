@@ -114,61 +114,20 @@
         position: fixed;
         inset: 0;
         width: 100%;
-        /* height: 100% (based on 100vh) breaks on mobile because the browser's
-           address bar hiding/showing changes vh mid-scroll, causing the video
-           to jump/crop differently than on desktop. dvh tracks the *real*
-           visible viewport, with vh/svh as fallbacks for older browsers. */
-        height: 100vh;
-        height: 100svh;
-        height: 100dvh;
+        height: 100%;
         object-fit: cover;
-        object-position: center center;
-        /* Sampled from the video's own background so that if contain mode
-           (below) ever shows a sliver of letterbox, it blends in instead of
-           showing as a visible bar. */
-        background-color: #fe5240;
         z-index: -1;
         transform: scale(1) translateZ(0);
         transform-origin: center center;
         opacity: 1;
         will-change: transform, opacity;
     }
- 
-    .hero-section {
-        min-height: 90vh;
-        min-height: 90svh;
-        min-height: 90dvh;
-    }
- 
-    @media (max-aspect-ratio: 4/5) {
-        /* On tall/narrow (mobile) screens, pinning the video "fixed" full-
-           viewport is what caused the empty red space and the ghost/duplicate
-           text underneath — the section was forced to 90dvh while the video's
-           own shape didn't match that box. Here the video is taken out of the
-           fixed/pinned trick entirely and placed as a normal block: width
-           100%, height auto. The browser then keeps its native aspect ratio
-           automatically (no JS needed), so the section hugs the video exactly
-           — zero leftover space — and the title/quote overlays (already
-           absolutely positioned inside this same section) land right on top
-           of the video, same as desktop. */
-        .hero-video-z {
-            position: static;
-            width: 100%;
-            height: auto;
-            display: block;
-            z-index: auto;
-        }
-        .hero-section {
-            min-height: 0;
-        }
-    }
- 
     /* Once JS confirms the hero has scrolled fully out of view, unpin the video
        so it doesn't sit "fixed" underneath the rest of the page forever. */
     .hero-video-z.is-parked {
         position: absolute;
     }
- 
+
     .hero-scroll-cue {
         animation: scrollCueBob 1.8s ease-in-out infinite;
     }
@@ -176,7 +135,7 @@
         0%, 100% { transform: translate(-50%, 0); }
         50% { transform: translate(-50%, 8px); }
     }
- 
+
     /* ---------- Reveal-on-scroll ---------- */
     .reveal-up {
         --tw-translate-y: 48px;
@@ -187,7 +146,7 @@
         --tw-translate-y: 0px;
         opacity: 1;
     }
- 
+
     @media (prefers-reduced-motion: reduce) {
         .reveal-up, .reveal-up.is-visible { transition: none !important; --tw-translate-y: 0px !important; opacity: 1 !important; }
         .hero-video-z { transition: none !important; }
@@ -208,8 +167,8 @@
 <!-- Background Texture Placeholder -->
 <div class="absolute inset-0 z-0 opacity-5 pointer-events-none" data-alt="A distressed, high-contrast brutalist grunge texture featuring torn paper edges, halftone patterns, and industrial scratches on a dark background. Rebellious editorial aesthetic, pure black and white styling." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBcym1t9412csOxiNzTxFrzTCZq0AGbdbqWbp4KAKvKaewlDg2rAAow5m1Ej3E8eKD6GwopPbmY9y_3Yp6Ewjp0kSAEdJ-OnLOXi1OUCTqc295tgekagRtrLZeTfgrFOiZzoVtgyWPRfhmXWhtfRnHWW4CDRg_bwQpSG9g_wVXD3GZsf00FsRLTfnYbEUo5KsgPOAuZzEn30C4Po03qmPFni4v1QSVOWQU_j_pu_nykSmGP3Fm1aWDW9w&quot;);"></div>
 <!-- Hero Section -->
-<section class="hero-section relative z-10 w-full min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16" data-no-reveal data-hero-pin>
-<video autoplay="" class="hero-video-z" loop="" muted="" playsinline="" webkit-playsinline="true" preload="auto">
+<section class="relative z-10 w-full min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16" data-no-reveal data-hero-pin>
+<video autoplay="" class="hero-video-z" loop="" muted="" playsinline="">
 <source src="hero-video.mp4" type="video/mp4">
 </video>
 <div class="absolute top-8 left-0 px-margin-page max-w-2xl z-20 reveal-manual">
@@ -226,14 +185,14 @@
                         "Telescopes extended human sight. Generative AI is being positioned as the first tool to extend human imagination itself — this site unpacks whether that claim holds up, and where it doesn't."
                     </p>
 </div>
- 
+
 </div>
- 
+
 <div class="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 text-off-white opacity-70 pointer-events-none">
 <span class="font-label-bold text-label-bold uppercase tracking-wider text-xs">Scroll</span>
 <span class="material-symbols-outlined">arrow_downward</span>
 </div>
- 
+
 </section>
 <!-- Why It Matters -->
 <section class="relative z-10 px-margin-page max-w-5xl mx-auto w-full mt-8">
@@ -470,9 +429,9 @@
 <div class="font-headline-lg text-headline-lg-mobile text-matte-black">
             © 2026 Harman Shrinivas Sanepogulu ,<span class="selectable-text copyable-text xkrh14z" style="white-space: pre-wrap;">CHM College(FY</span>IT). All rights reserved</div>
 <nav class="flex gap-6">
- 
- 
- 
+
+
+
 </nav>
 </footer>
 <!-- Interactive Script for Accordions -->
@@ -500,23 +459,23 @@
             });
         });
     </script>
- 
+
 <!-- Scroll reveal + Z-axis pinned hero video -->
 <script>
         document.addEventListener('DOMContentLoaded', () => {
- 
+
             /* ---- 1. Reveal-on-scroll for the rest of the page ---- */
             const revealTargets = document.querySelectorAll(
                 'main > section:not([data-no-reveal]), .accordion-item, table, footer, .reveal-manual'
             );
- 
+
             revealTargets.forEach((el, i) => {
                 el.classList.add('transform', 'reveal-up');
                 if (!el.style.transitionDelay) {
                     el.style.transitionDelay = `${(i % 4) * 0.09}s`;
                 }
             });
- 
+
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
@@ -525,91 +484,46 @@
                     }
                 });
             }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
- 
+
             revealTargets.forEach((el) => revealObserver.observe(el));
- 
+
             /* ---- 2. Hero video pinned on the Z axis, page scrolls over it ---- */
             const heroVideo = document.querySelector('.hero-video-z');
             const heroSection = document.querySelector('[data-hero-pin]');
- 
+
             if (heroVideo && heroSection) {
                 let ticking = false;
-                const mobileFitMQ = window.matchMedia('(max-aspect-ratio: 4/5)');
- 
+
                 const updateVideoZ = () => {
-                    // The fixed/pinned "video stays put while page scrolls over
-                    // it" effect only makes sense when the video is a fixed
-                    // full-bleed background (desktop). On mobile the video is
-                    // now a normal in-flow block sized to its own aspect ratio,
-                    // so skip the transform/opacity/park logic entirely there
-                    // — applying it caused the layout jump and ghost/duplicate
-                    // text underneath the video.
-                    if (mobileFitMQ.matches) {
-                        heroVideo.style.transform = '';
-                        heroVideo.style.opacity = '';
-                        heroVideo.classList.remove('is-parked');
-                        ticking = false;
-                        return;
-                    }
- 
                     const heroHeight = heroSection.offsetHeight || window.innerHeight;
                     const progress = Math.min(Math.max(window.scrollY / heroHeight, 0), 1);
- 
+
                     // Push the video back in Z space and fade it as content scrolls over it
                     const scale = 1 + progress * 0.28;
                     const translateZ = progress * -260;
                     const opacity = 1 - progress * 0.55;
- 
+
                     heroVideo.style.transform = `translateZ(${translateZ}px) scale(${scale})`;
                     heroVideo.style.opacity = opacity;
- 
+
                     // Once fully scrolled past the hero, stop pinning so it doesn't linger
                     // fixed underneath the rest of the document.
                     heroVideo.classList.toggle('is-parked', progress >= 1);
- 
+
                     ticking = false;
                 };
- 
+
                 window.addEventListener('scroll', () => {
                     if (!ticking) {
                         window.requestAnimationFrame(updateVideoZ);
                         ticking = true;
                     }
                 }, { passive: true });
- 
-                // Debounced resize/orientation handling. Mobile browsers fire
-                // `resize` repeatedly while the address bar hides/shows during
-                // scroll — without debouncing this recalculated (and briefly
-                // mis-scaled) the video on every tiny viewport change, which is
-                // why mobile looked different from desktop.
-                let resizeTimer;
-                const debouncedUpdate = () => {
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(updateVideoZ, 120);
-                };
-                window.addEventListener('resize', debouncedUpdate);
-                window.addEventListener('orientationchange', debouncedUpdate);
-                if (window.visualViewport) {
-                    window.visualViewport.addEventListener('resize', debouncedUpdate);
-                }
- 
-                // Some mobile browsers (esp. iOS with low-power mode or data
-                // saver) ignore the autoplay attribute silently. Force a play()
-                // call once metadata is ready so the hero video actually starts
-                // instead of showing a frozen first frame on mobile.
-                heroVideo.addEventListener('loadedmetadata', () => {
-                    const playPromise = heroVideo.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(() => { /* will retry on first touch */ });
-                    }
-                });
-                document.addEventListener('touchstart', () => {
-                    if (heroVideo.paused) heroVideo.play().catch(() => {});
-                }, { once: true, passive: true });
- 
+
+                window.addEventListener('resize', updateVideoZ);
                 updateVideoZ();
             }
         });
     </script>
- 
+
 </body></html>
