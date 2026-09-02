@@ -141,12 +141,25 @@
     }
  
     @media (max-aspect-ratio: 4/5) {
-        /* On tall/narrow (mobile portrait) screens, "cover" crops hard into
-           the left/right edges to fill the height — since the two hands sit
-           near those edges, they were getting cut off. "contain" keeps the
-           full composition (both hands) visible, same as desktop. */
+        /* On tall/narrow (mobile) screens, pinning the video "fixed" full-
+           viewport is what caused the empty red space and the ghost/duplicate
+           text underneath — the section was forced to 90dvh while the video's
+           own shape didn't match that box. Here the video is taken out of the
+           fixed/pinned trick entirely and placed as a normal block: width
+           100%, height auto. The browser then keeps its native aspect ratio
+           automatically (no JS needed), so the section hugs the video exactly
+           — zero leftover space — and the title/quote overlays (already
+           absolutely positioned inside this same section) land right on top
+           of the video, same as desktop. */
         .hero-video-z {
-            object-fit: contain;
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block;
+            z-index: auto;
+        }
+        .hero-section {
+            min-height: 0;
         }
     }
  
@@ -521,8 +534,24 @@
  
             if (heroVideo && heroSection) {
                 let ticking = false;
+                const mobileFitMQ = window.matchMedia('(max-aspect-ratio: 4/5)');
  
                 const updateVideoZ = () => {
+                    // The fixed/pinned "video stays put while page scrolls over
+                    // it" effect only makes sense when the video is a fixed
+                    // full-bleed background (desktop). On mobile the video is
+                    // now a normal in-flow block sized to its own aspect ratio,
+                    // so skip the transform/opacity/park logic entirely there
+                    // — applying it caused the layout jump and ghost/duplicate
+                    // text underneath the video.
+                    if (mobileFitMQ.matches) {
+                        heroVideo.style.transform = '';
+                        heroVideo.style.opacity = '';
+                        heroVideo.classList.remove('is-parked');
+                        ticking = false;
+                        return;
+                    }
+ 
                     const heroHeight = heroSection.offsetHeight || window.innerHeight;
                     const progress = Math.min(Math.max(window.scrollY / heroHeight, 0), 1);
  
