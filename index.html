@@ -133,13 +133,13 @@
         opacity: 1;
         will-change: transform, opacity;
     }
- 
+
     .hero-section {
         min-height: 90vh;
         min-height: 90svh;
         min-height: 90dvh;
     }
- 
+
     @media (max-aspect-ratio: 4/5) {
         /* On tall/narrow (mobile) screens, pinning the video "fixed" full-
            viewport is what caused the empty red space and the ghost/duplicate
@@ -162,13 +162,13 @@
             min-height: 0 !important;
         }
     }
- 
+
     /* Once JS confirms the hero has scrolled fully out of view, unpin the video
        so it doesn't sit "fixed" underneath the rest of the page forever. */
     .hero-video-z.is-parked {
         position: absolute;
     }
- 
+
     .hero-scroll-cue {
         animation: scrollCueBob 1.8s ease-in-out infinite;
     }
@@ -176,7 +176,7 @@
         0%, 100% { transform: translate(-50%, 0); }
         50% { transform: translate(-50%, 8px); }
     }
- 
+
     /* ---------- Reveal-on-scroll ---------- */
     .reveal-up {
         --tw-translate-y: 48px;
@@ -187,7 +187,7 @@
         --tw-translate-y: 0px;
         opacity: 1;
     }
- 
+
     @media (prefers-reduced-motion: reduce) {
         .reveal-up, .reveal-up.is-visible { transition: none !important; --tw-translate-y: 0px !important; opacity: 1 !important; }
         .hero-video-z { transition: none !important; }
@@ -226,14 +226,14 @@
                         "Telescopes extended human sight. Generative AI is being positioned as the first tool to extend human imagination itself — this site unpacks whether that claim holds up, and where it doesn't."
                     </p>
 </div>
- 
+
 </div>
- 
+
 <div class="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 text-off-white opacity-70 pointer-events-none">
 <span class="font-label-bold text-label-bold uppercase tracking-wider text-xs">Scroll</span>
 <span class="material-symbols-outlined">arrow_downward</span>
 </div>
- 
+
 </section>
 <!-- Why It Matters -->
 <section class="relative z-10 px-margin-page max-w-5xl mx-auto w-full mt-8">
@@ -448,17 +448,17 @@
 <tr class="border-b-2 border-outline-variant hover:bg-surface-variant transition-colors">
 <td class="p-4 border-r-2 border-outline-variant">1</td>
 <td class="p-4 border-r-2 border-outline-variant">Generative design explores thousands of configurations</td>
-<td class="p-4 text-secondary hover:underline cursor-pointer">McKinsey / Autodesk Articles</td>
+<td class="p-4 text-secondary"><a href="https://www.mckinsey.com/capabilities/operations/our-insights/how-generative-design-could-reshape-the-future-of-product-development" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">McKinsey / Autodesk Articles</a></td>
 </tr>
 <tr class="border-b-2 border-outline-variant hover:bg-surface-variant transition-colors">
 <td class="p-4 border-r-2 border-outline-variant">2</td>
 <td class="p-4 border-r-2 border-outline-variant">AlphaGo Move 37 — AI exceeding human intuition</td>
-<td class="p-4 text-secondary hover:underline cursor-pointer">DeepMind Case Studies (2016)</td>
+<td class="p-4 text-secondary"><a href="https://deepmind.google/research/alphago/" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">DeepMind Case Studies (2016)</a></td>
 </tr>
 <tr class="hover:bg-surface-variant transition-colors">
 <td class="p-4 border-r-2 border-outline-variant">3</td>
 <td class="p-4 border-r-2 border-outline-variant">GenAI bounded by training data limits</td>
-<td class="p-4 text-secondary hover:underline cursor-pointer">ML Literature on Distribution Limits</td>
+<td class="p-4 text-secondary"><a href="https://arxiv.org/html/2505.21677v3" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">ML Literature on Distribution Limits</a></td>
 </tr>
 </tbody>
 </table>
@@ -470,9 +470,9 @@
 <div class="font-headline-lg text-headline-lg-mobile text-matte-black">
             © 2026 Harman Shrinivas Sanepogulu ,<span class="selectable-text copyable-text xkrh14z" style="white-space: pre-wrap;">CHM College(FY</span>IT). All rights reserved</div>
 <nav class="flex gap-6">
- 
- 
- 
+
+
+
 </nav>
 </footer>
 <!-- Interactive Script for Accordions -->
@@ -500,23 +500,23 @@
             });
         });
     </script>
- 
+
 <!-- Scroll reveal + Z-axis pinned hero video -->
 <script>
         document.addEventListener('DOMContentLoaded', () => {
- 
+
             /* ---- 1. Reveal-on-scroll for the rest of the page ---- */
             const revealTargets = document.querySelectorAll(
                 'main > section:not([data-no-reveal]), .accordion-item, table, footer, .reveal-manual'
             );
- 
+
             revealTargets.forEach((el, i) => {
                 el.classList.add('transform', 'reveal-up');
                 if (!el.style.transitionDelay) {
                     el.style.transitionDelay = `${(i % 4) * 0.09}s`;
                 }
             });
- 
+
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
@@ -525,17 +525,17 @@
                     }
                 });
             }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
- 
+
             revealTargets.forEach((el) => revealObserver.observe(el));
- 
+
             /* ---- 2. Hero video pinned on the Z axis, page scrolls over it ---- */
             const heroVideo = document.querySelector('.hero-video-z');
             const heroSection = document.querySelector('[data-hero-pin]');
- 
+
             if (heroVideo && heroSection) {
                 let ticking = false;
                 const mobileFitMQ = window.matchMedia('(max-aspect-ratio: 4/5)');
- 
+
                 const updateVideoZ = () => {
                     // The fixed/pinned "video stays put while page scrolls over
                     // it" effect only makes sense when the video is a fixed
@@ -551,32 +551,32 @@
                         ticking = false;
                         return;
                     }
- 
+
                     const heroHeight = heroSection.offsetHeight || window.innerHeight;
                     const progress = Math.min(Math.max(window.scrollY / heroHeight, 0), 1);
- 
+
                     // Push the video back in Z space and fade it as content scrolls over it
                     const scale = 1 + progress * 0.28;
                     const translateZ = progress * -260;
                     const opacity = 1 - progress * 0.55;
- 
+
                     heroVideo.style.transform = `translateZ(${translateZ}px) scale(${scale})`;
                     heroVideo.style.opacity = opacity;
- 
+
                     // Once fully scrolled past the hero, stop pinning so it doesn't linger
                     // fixed underneath the rest of the document.
                     heroVideo.classList.toggle('is-parked', progress >= 1);
- 
+
                     ticking = false;
                 };
- 
+
                 window.addEventListener('scroll', () => {
                     if (!ticking) {
                         window.requestAnimationFrame(updateVideoZ);
                         ticking = true;
                     }
                 }, { passive: true });
- 
+
                 // Debounced resize/orientation handling. Mobile browsers fire
                 // `resize` repeatedly while the address bar hides/shows during
                 // scroll — without debouncing this recalculated (and briefly
@@ -592,7 +592,7 @@
                 if (window.visualViewport) {
                     window.visualViewport.addEventListener('resize', debouncedUpdate);
                 }
- 
+
                 // Some mobile browsers (esp. iOS with low-power mode or data
                 // saver) ignore the autoplay attribute silently. Force a play()
                 // call once metadata is ready so the hero video actually starts
@@ -606,11 +606,10 @@
                 document.addEventListener('touchstart', () => {
                     if (heroVideo.paused) heroVideo.play().catch(() => {});
                 }, { once: true, passive: true });
- 
+
                 updateVideoZ();
             }
         });
     </script>
- 
-</body></html>
 
+</body></html>
