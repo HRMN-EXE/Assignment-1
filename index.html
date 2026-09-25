@@ -1,6 +1,32 @@
+
 <!DOCTYPE html><html class="dark" lang="en" style=""><head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0" name="viewport" id="viewport-meta">
+<script>
+/* ---- Default view on touch devices: DESKTOP layout ----
+   Phones pick the mobile layout because of width=device-width.
+   Locking the layout viewport to 1400px makes all min-width
+   (Tailwind md:/lg:) rules match, so mobiles render the desktop
+   design, zoomed to fit. Choice is remembered in localStorage.
+   A corner toggle (added at the bottom of this file) switches back. */
+(function () {
+  var meta = document.getElementById('viewport-meta');
+  var DESKTOP_W = 1400;
+  function apply(mode) {
+    if (mode === 'desktop') meta.setAttribute('content', 'width=' + DESKTOP_W);
+    else meta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+    try { localStorage.setItem('genai-view', mode); } catch (e) {}
+    window.__genaiView = mode;
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('genai-view'); } catch (e) {}
+  apply(saved || 'desktop');
+  window.toggleView = function () {
+    apply(window.__genaiView === 'desktop' ? 'mobile' : 'desktop');
+    location.reload(); /* reload = reliable re-layout on iOS Safari */
+  };
+})();
+</script>
 <title>GenAI: Creativity at Mechanical Scale</title>
 <!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
@@ -360,6 +386,20 @@
 <p class="">Real-world examples of generative design: aerospace brackets, bicycle frames, architectural layouts. Real-world examples of generative AI: chatbots, image generators, code assistants. This site uses generative design as an illustration of "beyond ordinary intuition," while making clear it's a cousin technology, not the same thing as GenAI.</p>
 </div>
 </div>
+<div class="accordion-item bg-off-white border-4 border-matte-black text-matte-black group shadow-[6px_6px_0px_#1A1A1A] mt-6">
+<button aria-expanded="false" class="accordion-trigger w-full flex justify-between items-center p-4 hover:bg-tertiary transition-colors text-left">
+<span class="font-label-bold text-label-bold uppercase text-crimson flex items-center gap-2">
+<span class="material-symbols-outlined">newspaper</span>
+                            New (2026): did a machine really out-design human chip engineers?
+                        </span>
+<span class="material-symbols-outlined text-crimson text-2xl group-[.is-open]:rotate-45 transition-transform">add</span>
+</button>
+<div class="accordion-content p-4 border-t-4 border-matte-black font-body-md text-body-md bg-surface-container-highest text-off-white hidden">
+<p class="mb-4">Yes — and it fits this site's story exactly. RF chip design (the radios inside every phone, Wi-Fi box and car radar) is so hard that engineers call it a <strong>"dark art."</strong> In 2025–26, USC PhD student <strong>Vinay Chenna</strong> (with Prof. Hossein Hashemi) built an algorithm that designs these circuits autonomously: it splits the layout into a 3D pixel grid, randomly flips pixels, and keeps only changes that pass a full physics simulation — <strong>no training data, no neural network</strong> (the design space is ~10<sup>324</sup> configurations; generating training data would take decades).</p>
+<p class="mb-4">The results look, in Hashemi's words, <strong>"like a QR code — quasi random, quasi uninterpretable"</strong> — yet they outperform human designs: a millimetre-wave power amplifier with &gt;30% efficiency on a chip smaller than a grain of rice (Best Paper, RFIC Symposium 2025), and a 5G/6G low-noise amplifier at performance levels conventional methods haven't reached (ISSCC 2026). Real chips were fabricated by Tower Semiconductor. Neither researcher can yet explain why the winning geometries work.</p>
+<p class="">Honest label, same as above: this is <strong>not GenAI and not reinforcement learning</strong> — it is inverse design / metaheuristic search (a cousin technology, like generative design). It earns a place here because it is the purest real-world example of this site's thesis: human intent in, thousands of configurations explored, and hyper-optimized forms beyond ordinary human intuition out.</p>
+</div>
+</div>
 </div>
 </section>
 <!-- Glossary & FAQ Bento Grid area -->
@@ -455,10 +495,15 @@
 <td class="p-4 border-r-2 border-outline-variant">AlphaGo Move 37 — AI exceeding human intuition</td>
 <td class="p-4 text-secondary"><a href="https://deepmind.google/research/alphago/" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">DeepMind Case Studies (2016)</a></td>
 </tr>
-<tr class="hover:bg-surface-variant transition-colors">
+<tr class="border-b-2 border-outline-variant hover:bg-surface-variant transition-colors">
 <td class="p-4 border-r-2 border-outline-variant">3</td>
 <td class="p-4 border-r-2 border-outline-variant">GenAI bounded by training data limits</td>
 <td class="p-4 text-secondary"><a href="https://arxiv.org/html/2505.21677v3" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">ML Literature on Distribution Limits</a></td>
+</tr>
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="p-4 border-r-2 border-outline-variant">4</td>
+<td class="p-4 border-r-2 border-outline-variant">Algorithmic search can out-design human intuition — QR-code-like 5G/6G RF chips (2026)</td>
+<td class="p-4 text-secondary"><a href="https://spectrum.ieee.org/ai-radio-chip-design" target="_blank" rel="noopener noreferrer" class="hover:underline cursor-pointer">IEEE Spectrum / USC Viterbi (2026)</a></td>
 </tr>
 </tbody>
 </table>
@@ -612,4 +657,18 @@
         });
     </script>
 
+<!-- View toggle: only shown on touch devices (phones/tablets) -->
+<button id="view-toggle" style="position:fixed;bottom:14px;right:14px;z-index:200;background:#1A1A1A;color:#F5F5F5;border:2px solid #F5F5F5;padding:8px 12px;font:700 12px Arial, sans-serif;letter-spacing:.05em;text-transform:uppercase;box-shadow:4px 4px 0 #DC143C;cursor:pointer;display:none;">Switch to mobile view</button>
+<script>
+(function () {
+  if (!window.matchMedia('(pointer: coarse)').matches) return; /* real desktops: no button */
+  var b = document.getElementById('view-toggle');
+  b.style.display = 'block';
+  function label() {
+    b.textContent = window.__genaiView === 'desktop' ? 'Switch to mobile view' : 'Switch to desktop view';
+  }
+  label();
+  b.addEventListener('click', window.toggleView);
+})();
+</script>
 </body></html>
